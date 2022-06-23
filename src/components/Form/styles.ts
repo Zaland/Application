@@ -17,6 +17,10 @@ export const styles = {
     borderRadius: "8px",
     padding: "40px",
   },
+  Container_buttons: {
+    paddingTop: "45px",
+    textAlign: "center",
+  },
 };
 
 export const buttonTheme = createTheme({

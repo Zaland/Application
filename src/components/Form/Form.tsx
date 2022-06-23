@@ -40,7 +40,7 @@ export const Form = () => (
         />
       </Paper>
 
-      <Box sx={{ paddingTop: "45px", textAlign: "center" }}>
+      <Box sx={Container_buttons}>
         <ThemeProvider theme={buttonTheme}>
           <Button color="primary" variant="outlined">
             Cancel
