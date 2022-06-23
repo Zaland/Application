@@ -11,6 +11,7 @@ import { Button } from "./Button";
 interface FormInput {
   fullName: string;
   contactNumber: string;
+  emailAddress: string;
 }
 
 export const Form = () => {
@@ -92,12 +93,32 @@ export const Form = () => {
               )}
             />
 
-            <Label>Email Address</Label>
-            <Input
-              label="Email Address"
-              marginTop="10px"
-              marginBottom="25px"
-              fullWidth
+            <Controller
+              name="emailAddress"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Email address is required",
+                validate: {
+                  checkPhone: (value) =>
+                    validator.isEmail(value) || "Invalid email address",
+                },
+              }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  label="Email Address"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
             />
 
             <Label>Date of Birth</Label>
