@@ -19,7 +19,15 @@ export const Form = () => (
         <Input
           label="Full Name"
           marginTop="10px"
-          marginBottom="16px"
+          marginBottom="25px"
+          fullWidth
+        />
+
+        <Label>Contact Number</Label>
+        <Input
+          label="Contact Number"
+          marginTop="10px"
+          marginBottom="25px"
           fullWidth
         />
 
@@ -27,17 +35,43 @@ export const Form = () => (
         <Input
           label="Email Address"
           marginTop="10px"
-          marginBottom="16px"
+          marginBottom="25px"
           fullWidth
         />
+
+        <Label>Date of Birth</Label>
+        <Grid container spacing={2}>
+          <Grid item xs={4}>
+            <Input label="Day" marginTop="10px" marginBottom="25px" fullWidth />
+          </Grid>
+          <Grid item xs={4}>
+            <Input
+              label="Month"
+              marginTop="10px"
+              marginBottom="25px"
+              fullWidth
+            />
+          </Grid>
+          <Grid item xs={4}>
+            <Input
+              label="Year"
+              marginTop="10px"
+              marginBottom="25px"
+              fullWidth
+            />
+          </Grid>
+        </Grid>
 
         <Label>Password</Label>
         <Input
           label="Create Password"
           marginTop="10px"
-          marginBottom="16px"
+          marginBottom="25px"
           fullWidth
         />
+
+        <Label>Confirm Password</Label>
+        <Input label="Confirm Password" marginTop="10px" fullWidth />
       </Paper>
 
       <Box sx={styles.Container_buttons}>
