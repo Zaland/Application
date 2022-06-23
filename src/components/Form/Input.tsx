@@ -5,29 +5,29 @@ type InputProps = TextFieldProps & {
   marginBottom?: string | number;
 };
 
-const CustomInput = styled(TextField)<InputProps>(
-  ({ marginTop, marginBottom }) => ({
-    marginTop,
-    marginBottom,
-  })
-);
+const CustomInput = styled(TextField, {
+  shouldForwardProp: (prop) => prop !== "marginTop" && prop !== "marginBottom",
+})<InputProps>(({ marginTop, marginBottom }) => ({
+  marginTop,
+  marginBottom,
+}));
 
 export const Input = ({
-  label,
-  variant = "outlined",
-  fullWidth,
   marginTop = 0,
   marginBottom = 0,
+  variant = "outlined",
+  label,
+  ...theRest
 }: InputProps) => (
   <CustomInput
+    marginTop={marginTop}
+    marginBottom={marginBottom}
     label={
       <>
         {label} <span style={{ color: "red" }}>*</span>
       </>
     }
     variant={variant}
-    marginTop={marginTop}
-    marginBottom={marginBottom}
-    fullWidth={fullWidth}
+    {...theRest}
   />
 );

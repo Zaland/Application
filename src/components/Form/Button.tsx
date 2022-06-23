@@ -8,7 +8,9 @@ type ButtonProps = MuiButtonProps & {
   marginLeft?: string | number;
 };
 
-const CustomButton = styled(MuiButton)<ButtonProps>(({ marginLeft }) => ({
+const CustomButton = styled(MuiButton, {
+  shouldForwardProp: (prop) => prop !== "marginLeft",
+})<ButtonProps>(({ marginLeft }) => ({
   width: 145,
   height: 46,
   textTransform: "none",
