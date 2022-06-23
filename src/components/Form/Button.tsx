@@ -23,8 +23,14 @@ export const Button = ({
   variant,
   marginLeft = 0,
   color,
+  ...theRest
 }: ButtonProps) => (
-  <CustomButton variant={variant} marginLeft={marginLeft} color={color}>
+  <CustomButton
+    variant={variant}
+    marginLeft={marginLeft}
+    color={color}
+    {...theRest}
+  >
     {children}
   </CustomButton>
 );
