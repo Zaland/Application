@@ -2,7 +2,11 @@ import { Box, Grid, Typography, Paper, ThemeProvider } from "@mui/material";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import validator from "validator";
 
-import { checkIfSpacesAround, checkIfSymbols } from "../../helper/utilities";
+import {
+  checkIfSpacesAround,
+  checkIfSymbols,
+  checkIfPasswordValid,
+} from "../../helper/utilities";
 import { styles, buttonTheme } from "./styles";
 import { Label } from "./Label";
 import { Input } from "./Input";
@@ -12,10 +16,12 @@ interface FormInput {
   fullName: string;
   contactNumber: string;
   emailAddress: string;
+  password: string;
+  confirmPassword: string;
 }
 
 export const Form = () => {
-  const { handleSubmit, control } = useForm<FormInput>();
+  const { handleSubmit, control, getValues } = useForm<FormInput>();
 
   const onSubmit: SubmitHandler<FormInput> = (data) => console.log({ data });
 
@@ -150,15 +156,69 @@ export const Form = () => {
             </Grid>
 
             <Label>Password</Label>
-            <Input
-              label="Create Password"
-              marginTop="10px"
-              marginBottom="25px"
-              fullWidth
+            <Controller
+              name="password"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Password is required",
+                minLength: {
+                  value: 8,
+                  message: "Minimum of 8 characters required",
+                },
+                validate: {
+                  checkPassword: (value) =>
+                    checkIfPasswordValid(value) ||
+                    "Password must contain at least one lower case letter, one upper case letter, and one number",
+                },
+              }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  label="Create Password"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  type="password"
+                />
+              )}
             />
 
             <Label>Confirm Password</Label>
-            <Input label="Confirm Password" marginTop="10px" fullWidth />
+            <Controller
+              name="confirmPassword"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Password doesn't match",
+                validate: {
+                  checkPassword: (value) =>
+                    value === getValues("password") || "Password doesn't match",
+                },
+              }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  label="Create Password"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                  type="password"
+                />
+              )}
+            />
           </Paper>
 
           <Box sx={styles.Container_buttons}>
