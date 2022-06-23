@@ -1,5 +1,6 @@
 import { Box, Grid, Typography, Paper, ThemeProvider } from "@mui/material";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
+import validator from "validator";
 
 import { checkIfSpacesAround, checkIfSymbols } from "../../helper/utilities";
 import { styles, buttonTheme } from "./styles";
@@ -9,6 +10,7 @@ import { Button } from "./Button";
 
 interface FormInput {
   fullName: string;
+  contactNumber: string;
 }
 
 export const Form = () => {
@@ -35,7 +37,7 @@ export const Form = () => {
               control={control}
               defaultValue=""
               rules={{
-                required: "Full name required",
+                required: "Full name is required",
                 validate: {
                   checkSpaces: (value) =>
                     !checkIfSpacesAround(value) || "Remove spaces around field",
@@ -61,11 +63,33 @@ export const Form = () => {
             />
 
             <Label>Contact Number</Label>
-            <Input
-              label="Contact Number"
-              marginTop="10px"
-              marginBottom="25px"
-              fullWidth
+            <Controller
+              name="contactNumber"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Contact number is required",
+                validate: {
+                  checkPhone: (value) =>
+                    validator.isMobilePhone(value, "en-CA") ||
+                    "Invalid phone number",
+                },
+              }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  label="Contact Number"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
             />
 
             <Label>Email Address</Label>
