@@ -40,7 +40,7 @@ export const Form = () => (
         />
       </Paper>
 
-      <Box sx={Container_buttons}>
+      <Box sx={styles.Container_buttons}>
         <ThemeProvider theme={buttonTheme}>
           <Button color="primary" variant="outlined">
             Cancel
