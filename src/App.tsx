@@ -1,9 +1,18 @@
-import { CssBaseline } from "@mui/material";
-import { Appbar } from "./components";
+import { CssBaseline, createTheme, ThemeProvider } from "@mui/material";
+import { Appbar, Form } from "./components";
+
+const theme = createTheme({
+  typography: {
+    fontFamily: "'Montserrat', sans-serif",
+  },
+});
 
 export const App = () => (
   <>
     <CssBaseline />
-    <Appbar />
+    <ThemeProvider theme={theme}>
+      <Appbar />
+      <Form />
+    </ThemeProvider>
   </>
 );
