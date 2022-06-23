@@ -1,53 +1,20 @@
-import { useState, useEffect } from "react";
 import { Box, Grid, Typography, Paper, ThemeProvider } from "@mui/material";
+import { useForm, SubmitHandler, Controller } from "react-hook-form";
 
-import {
-  checkIfSpacesAround,
-  checkIfEmpty,
-  checkIfSymbols,
-} from "../../helper/utilities";
+import { checkIfSpacesAround, checkIfSymbols } from "../../helper/utilities";
 import { styles, buttonTheme } from "./styles";
 import { Label } from "./Label";
 import { Input } from "./Input";
 import { Button } from "./Button";
 
+interface FormInput {
+  fullName: string;
+}
+
 export const Form = () => {
-  const [fullName, setFullName] = useState({
-    value: "",
-    error: false,
-    errorMessage: "",
-    touched: false,
-  });
+  const { handleSubmit, control } = useForm<FormInput>();
 
-  console.log({ fullName });
-
-  useEffect(() => {
-    if (!fullName.touched) return;
-
-    let error = false;
-    let errorMessage = "";
-
-    if (checkIfEmpty(fullName.value)) {
-      error = true;
-      errorMessage = "Please enter a value.";
-    } else if (checkIfSpacesAround(fullName.value)) {
-      error = true;
-      errorMessage =
-        "Please remove the spaces in the front and/or end of the field.";
-    } else if (checkIfSymbols(fullName.value)) {
-      error = true;
-      errorMessage = "Please remove symbols from the field.";
-    } else {
-      error = false;
-      errorMessage = "";
-    }
-
-    setFullName((fullName) => ({
-      ...fullName,
-      error,
-      errorMessage,
-    }));
-  }, [fullName.value, fullName.touched]);
+  const onSubmit: SubmitHandler<FormInput> = (data) => console.log({ data });
 
   return (
     <Grid
@@ -57,92 +24,114 @@ export const Form = () => {
       sx={styles.Container}
     >
       <Grid item sm={3}>
-        <Typography sx={styles.Container_title}>Create User Account</Typography>
-        <Paper sx={styles.Container_form}>
-          <Label>Full Name</Label>
-          <Input
-            label="Full Name"
-            marginTop="10px"
-            marginBottom="25px"
-            fullWidth
-            error={fullName.error}
-            helperText={fullName.errorMessage}
-            value={fullName.value}
-            onChange={(event) =>
-              setFullName((fullName) => ({
-                ...fullName,
-                value: event.target.value,
-                touched: true,
-              }))
-            }
-          />
+        <form onSubmit={handleSubmit(onSubmit)}>
+          <Typography sx={styles.Container_title}>
+            Create User Account
+          </Typography>
+          <Paper sx={styles.Container_form}>
+            <Label>Full Name</Label>
+            <Controller
+              name="fullName"
+              control={control}
+              defaultValue=""
+              rules={{
+                required: "Full name required",
+                validate: {
+                  checkSpaces: (value) =>
+                    !checkIfSpacesAround(value) || "Remove spaces around field",
+                  checkSymbols: (value) =>
+                    !checkIfSymbols(value) || "Remove symbols",
+                },
+              }}
+              render={({
+                field: { onChange, value },
+                fieldState: { error },
+              }) => (
+                <Input
+                  label="Full Name"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                  value={value}
+                  onChange={onChange}
+                  error={!!error}
+                  helperText={error ? error.message : null}
+                />
+              )}
+            />
 
-          <Label>Contact Number</Label>
-          <Input
-            label="Contact Number"
-            marginTop="10px"
-            marginBottom="25px"
-            fullWidth
-          />
+            <Label>Contact Number</Label>
+            <Input
+              label="Contact Number"
+              marginTop="10px"
+              marginBottom="25px"
+              fullWidth
+            />
 
-          <Label>Email Address</Label>
-          <Input
-            label="Email Address"
-            marginTop="10px"
-            marginBottom="25px"
-            fullWidth
-          />
+            <Label>Email Address</Label>
+            <Input
+              label="Email Address"
+              marginTop="10px"
+              marginBottom="25px"
+              fullWidth
+            />
 
-          <Label>Date of Birth</Label>
-          <Grid container spacing={2}>
-            <Grid item xs={4}>
-              <Input
-                label="Day"
-                marginTop="10px"
-                marginBottom="25px"
-                fullWidth
-              />
+            <Label>Date of Birth</Label>
+            <Grid container spacing={2}>
+              <Grid item xs={4}>
+                <Input
+                  label="Day"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Input
+                  label="Month"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                />
+              </Grid>
+              <Grid item xs={4}>
+                <Input
+                  label="Year"
+                  marginTop="10px"
+                  marginBottom="25px"
+                  fullWidth
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={4}>
-              <Input
-                label="Month"
-                marginTop="10px"
-                marginBottom="25px"
-                fullWidth
-              />
-            </Grid>
-            <Grid item xs={4}>
-              <Input
-                label="Year"
-                marginTop="10px"
-                marginBottom="25px"
-                fullWidth
-              />
-            </Grid>
-          </Grid>
 
-          <Label>Password</Label>
-          <Input
-            label="Create Password"
-            marginTop="10px"
-            marginBottom="25px"
-            fullWidth
-          />
+            <Label>Password</Label>
+            <Input
+              label="Create Password"
+              marginTop="10px"
+              marginBottom="25px"
+              fullWidth
+            />
 
-          <Label>Confirm Password</Label>
-          <Input label="Confirm Password" marginTop="10px" fullWidth />
-        </Paper>
+            <Label>Confirm Password</Label>
+            <Input label="Confirm Password" marginTop="10px" fullWidth />
+          </Paper>
 
-        <Box sx={styles.Container_buttons}>
-          <ThemeProvider theme={buttonTheme}>
-            <Button color="primary" variant="outlined">
-              Cancel
-            </Button>
-            <Button color="secondary" variant="contained" marginLeft="15px">
-              Submit
-            </Button>
-          </ThemeProvider>
-        </Box>
+          <Box sx={styles.Container_buttons}>
+            <ThemeProvider theme={buttonTheme}>
+              <Button color="primary" variant="outlined">
+                Cancel
+              </Button>
+              <Button
+                color="secondary"
+                variant="contained"
+                marginLeft="15px"
+                type="submit"
+              >
+                Submit
+              </Button>
+            </ThemeProvider>
+          </Box>
+        </form>
       </Grid>
     </Grid>
   );
