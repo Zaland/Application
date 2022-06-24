@@ -3,6 +3,7 @@ import { createTheme } from "@mui/material";
 export const styles = {
   Container: {
     marginTop: "100px",
+    marginBottom: "100px",
   },
   Container_title: {
     fontWeight: 600,
