@@ -29,12 +29,13 @@ interface FormInput {
 
 export const Form = () => {
   const [status, setStatus] = useState<Boolean | null>(null);
+  const [message, setMessage] = useState("");
 
   const { handleSubmit, control, getValues } = useForm<FormInput>();
 
   const onSubmit: SubmitHandler<FormInput> = async (data) => {
     try {
-      await axios.post(
+      const response = await axios.post(
         `https://ideatheorem-test.herokuapp.com/api/users/create`,
         {
           full_name: data.fullName,
@@ -45,8 +46,13 @@ export const Form = () => {
         }
       );
 
+      setMessage(response.data.description);
       setStatus(true);
-    } catch (error) {
+    } catch (error: any) {
+      setMessage(
+        error.response.data.description ||
+          "Something went wrong. Please try again."
+      );
       setStatus(false);
     }
   };
@@ -58,12 +64,8 @@ export const Form = () => {
       justifyContent="center"
       sx={styles.Container}
     >
-      {status === true && (
-        <Alert severity="success">User account successfully created.</Alert>
-      )}
-      {status === false && (
-        <Alert severity="error">There was an error creating the account.</Alert>
-      )}
+      {status === true && <Alert severity="success">{message}</Alert>}
+      {status === false && <Alert severity="error">{message}</Alert>}
 
       <Grid item xs={10} sm={7} md={5} xl={4}>
         <form onSubmit={handleSubmit(onSubmit)}>
