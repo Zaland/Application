@@ -1,4 +1,6 @@
 import { Box, Grid, Typography, Paper, ThemeProvider } from "@mui/material";
+import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import validator from "validator";
 
@@ -6,6 +8,7 @@ import {
   checkIfSpacesAround,
   checkIfSymbols,
   checkIfPasswordValid,
+  checkIfDateValid,
 } from "../../helper/utilities";
 import { styles, buttonTheme } from "./styles";
 import { Label } from "./Label";
@@ -16,6 +19,7 @@ interface FormInput {
   fullName: string;
   contactNumber: string;
   emailAddress: string;
+  dateOfBirth: Date;
   password: string;
   confirmPassword: string;
 }
@@ -99,6 +103,7 @@ export const Form = () => {
               )}
             />
 
+            <Label>Email Address</Label>
             <Controller
               name="emailAddress"
               control={control}
@@ -127,33 +132,44 @@ export const Form = () => {
               )}
             />
 
-            <Label>Date of Birth</Label>
-            <Grid container spacing={2}>
-              <Grid item xs={4}>
-                <Input
-                  label="Day"
-                  marginTop="10px"
-                  marginBottom="25px"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Input
-                  label="Month"
-                  marginTop="10px"
-                  marginBottom="25px"
-                  fullWidth
-                />
-              </Grid>
-              <Grid item xs={4}>
-                <Input
-                  label="Year"
-                  marginTop="10px"
-                  marginBottom="25px"
-                  fullWidth
-                />
-              </Grid>
-            </Grid>
+            <Label>Date of Birth (MM/DD/YYYY)</Label>
+            <LocalizationProvider dateAdapter={AdapterDateFns}>
+              <Controller
+                name="dateOfBirth"
+                defaultValue={new Date()}
+                control={control}
+                rules={{
+                  required: "Date of birth is required",
+                  validate: {
+                    checkDate: (value) =>
+                      !checkIfDateValid(value) || "Invalid date",
+                  },
+                }}
+                render={({
+                  field: { onChange, value },
+                  fieldState: { error },
+                }) => (
+                  <DesktopDatePicker
+                    label="Date of Birth"
+                    inputFormat="MM/dd/yyyy"
+                    disablePast
+                    value={value}
+                    onChange={onChange}
+                    renderInput={(params) => (
+                      <Input
+                        {...params}
+                        label="Date of Birth"
+                        marginTop="10px"
+                        marginBottom="25px"
+                        fullWidth
+                        error={!!error}
+                        helperText={error ? error.message : null}
+                      />
+                    )}
+                  />
+                )}
+              />
+            </LocalizationProvider>
 
             <Label>Password</Label>
             <Controller
