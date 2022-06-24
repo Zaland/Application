@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Box, Grid, Typography, Paper, ThemeProvider } from "@mui/material";
 import { DesktopDatePicker, LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
@@ -14,6 +15,8 @@ import { styles, buttonTheme } from "./styles";
 import { Label } from "./Label";
 import { Input } from "./Input";
 import { Button } from "./Button";
+import { Alert } from "./Alert";
+import axios from "axios";
 
 interface FormInput {
   fullName: string;
@@ -25,9 +28,28 @@ interface FormInput {
 }
 
 export const Form = () => {
+  const [status, setStatus] = useState<Boolean | null>(null);
+
   const { handleSubmit, control, getValues } = useForm<FormInput>();
 
-  const onSubmit: SubmitHandler<FormInput> = (data) => console.log({ data });
+  const onSubmit: SubmitHandler<FormInput> = async (data) => {
+    try {
+      await axios.post(
+        `https://ideatheorem-test.herokuapp.com/api/users/create`,
+        {
+          full_name: data.fullName,
+          contact_number: data.contactNumber,
+          email: data.emailAddress,
+          date_of_birth: data.dateOfBirth,
+          password: data.password,
+        }
+      );
+
+      setStatus(true);
+    } catch (error) {
+      setStatus(false);
+    }
+  };
 
   return (
     <Grid
@@ -36,7 +58,14 @@ export const Form = () => {
       justifyContent="center"
       sx={styles.Container}
     >
-      <Grid item sm={3}>
+      {status === true && (
+        <Alert severity="success">User account successfully created.</Alert>
+      )}
+      {status === false && (
+        <Alert severity="error">There was an error creating the account.</Alert>
+      )}
+
+      <Grid item xs={10} sm={7} md={5} xl={4}>
         <form onSubmit={handleSubmit(onSubmit)}>
           <Typography sx={styles.Container_title}>
             Create User Account
